@@ -1,8 +1,8 @@
-<?php 
+<?php
 require_once ('./jpgraph/src/jpgraph.php');
 require_once ('./jpgraph/src/jpgraph_scatter.php');
-$now1=date("Y-m-d H:i:s"); 
-DEFINE('fl13','./fl13_lab.png');
+$now1=date("Y-m-d H:i:s");
+DEFINE('fl13','/var/www/html/fl13_plan.png');
 $zonefl13[0]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z1/analytic/wasted_energy/per_day';
 $zonefl13[1]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z2/analytic/wasted_energy/per_day';
 $zonefl13[2]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z3/analytic/wasted_energy/per_day';
@@ -13,91 +13,68 @@ $zonefl13[6]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z7/analytic/was
 $zonefl13[7]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z8/analytic/wasted_energy/per_day';
 $uuid=uuid();
 foreach ($zonefl13 as &$key){
-        $wastedresult[]=fetchdata($key,$uuid);
+        $wastedresult[]=number_format(round(fetchdata($key,$uuid),1),1,'.','');
 }
 //var_dump($wastedresult);
- foreach ($wastedresult as &$key1){
+foreach ($wastedresult as &$key1){
         $colorresult[]=colorresult($key1);
 }
-//var_dump($colorresult);
-
-
-
 function markCallback($y,$x) {
-    // Return array width
-    // width,color,fill color, marker filename, imgscale
-    // any value can be false, in that case the default value will
-    // be used.
-    // We only make one pushpin another color
-    if( $x == 54 ) 
+    if( $x == 54 )
     return array(false,false,false,'red',0.8);
     else
     return array(false,false,false,'yellow',2);
 }
- 
-// Data arrays
-//$datax = array(10,20,30,40,54,60,70,80);
-//$datay = array(15,23,65,18,84,28,86,44);
- 
 $data = array(
-    array(18,82,40,$colorresult[0]),
-    array(17,34,40,$colorresult[1]),
-    array(36,82,40,$colorresult[2]),
-    array(37,34,40,$colorresult[3]),
-	array(54,82,40,$colorresult[4]),
-	array(54,34,40,$colorresult[5]),
-	array(73,82,40,$colorresult[6]),
-	array(73,34,40,$colorresult[7])
-
-
+    array(12,82,40,$colorresult[0]),
+    array(12,36,40,$colorresult[1]),
+    array(32,82,40,$colorresult[2]),
+    array(32,36,40,$colorresult[3]),
+        array(55,82,40,$colorresult[4]),
+        array(55,36,40,$colorresult[5]),
+        array(74,82,40,$colorresult[6]),
+        array(74,36,40,$colorresult[7])
 );
- 
- 
- 
 // We need to create X,Y data vectors suitable for the
 // library from the above raw data.
 $n = count($data);
 for( $i=0; $i < $n; ++$i ) {
-    
+
     $datax[$i] = $data[$i][0];
     $datay[$i] = $data[$i][1];
- 
+
     // Create a faster lookup array so we don't have to search
     // for the correct values in the callback function
     $format[strval($datax[$i])][strval($datay[$i])] = array($data[$i][2],$data[$i][3]);
-    
+
 }
-// Callback for markers
-// Must return array(width,border_color,fill_color,filename,imgscale)
-// If any of the returned values are '' then the
-// default value for that parameter will be used (possible empty)
 function FCallback($aYVal,$aXVal) {
     global $format;
     return array($format[strval($aXVal)][strval($aYVal)][0],'',
          $format[strval($aXVal)][strval($aYVal)][1],'','');
 }
+//$wastedstring=
 // Setup the graph
 $graph = new Graph(1920,1280);
- 
+
 // We add a small 1pixel left,right,bottom margin so the plot area
 // doesn't cover the frame around the graph.
 $graph->img->SetMargin(1,1,1,1);
 $graph->SetScale('linlin',0,100,0,100);
- 
+
 // We don't want any axis to be shown
 $graph->xaxis->Hide();
 $graph->yaxis->Hide();
- 
+
 // Use a worldmap as the background and let it fill the plot area
 $graph->SetBackgroundImage(fl13,BGIMG_FILLPLOT);
- 
+
 // Setup a nice title with a striped bevel background
-$graph->title->Set("             Floor 13 research lab:  Wasted energy ratio         Modified:$now1");
+$graph->title->Set("Floor 13 research lab:  Wasted energy ratio                                       Modified:$now1");
 $graph->title->SetFont(FF_ARIAL,FS_BOLD,30);
 $graph->title->SetColor('white');
 $graph->SetTitleBackground('darkgreen',TITLEBKG_STYLE1,TITLEBKG_FRAME_BEVEL);
 $graph->SetTitleBackgroundFillStyle(TITLEBKG_FILLSTYLE_HSTRIPED,'blue','darkgreen');
- 
 // Finally create the scatterplot
 $sp = new ScatterPlot($datay,$datax);
 //$sp->value->Show();
@@ -106,18 +83,61 @@ $sp = new ScatterPlot($datay,$datax);
 $sp->mark->SetType(MARK_FILLEDCIRCLE);
 // Install the Y-X callback for the markers
 $sp->mark->SetCallbackYX('FCallback');
- 
 // ...  and add it to the graph
-$graph->Add($sp);    
- 
+$graph->Add($sp);
+$txt0 = new Text("$wastedresult[0]".'%');
+$txt0->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt0->SetPos(196,260);
+$txt0->SetColor('white');
+$txt1 = new Text("$wastedresult[1]".'%');
+$txt1->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt1->SetPos(196,825);
+$txt1->SetColor('white');
+$txt2 = new Text("$wastedresult[2]".'%');
+$txt2->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt2->SetPos(580,260);
+$txt2->SetColor('white');
+$txt3 = new Text("$wastedresult[3]".'%');
+$txt3->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt3->SetPos(580,825);
+$txt3->SetColor('white');
+$txt4 = new Text("$wastedresult[4]".'%');
+$txt4->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt4->SetPos(1025,260);
+$txt4->SetColor('white');
+$txt5 = new Text("$wastedresult[5]".'%');
+$txt5->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt5->SetPos(1025,825);
+$txt5->SetColor('white');
+$txt6 = new Text("$wastedresult[6]".'%');
+$txt6->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt6->SetPos(1385,260);
+$txt6->SetColor('white');
+$txt7 = new Text("$wastedresult[7]".'%');
+$txt7->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt7->SetPos(1385,825);
+$txt7->SetColor('white');
+$bottomtext =new Text("Wasted energy ratio is the indicator of wasted energy in air conditioning system consumption.");
+$bottomtext->SetFont(FF_ARIAL,FS_BOLD,24);
+$bottomtext->SetPos(50,1240);
+$bottomtext->SetColor('black');
+
+//$txt->SetBox('yellow','black');
+//$txt->SetShadow();
+$graph->AddText($txt0);
+$graph->AddText($txt1);
+$graph->AddText($txt2);
+$graph->AddText($txt3);
+$graph->AddText($txt4);
+$graph->AddText($txt5);
+$graph->AddText($txt6);
+$graph->AddText($txt7);
+$graph->AddText($bottomtext);
+
 // .. and output to browser
-$graph->Stroke('/var/www/html/wastefl13.png');
-//$graph->Stroke();
-$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh');
-
-
-
-
+//$graph->Stroke('/var/www/html/wastefl13.png');
+$graph->Stroke();
+//$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh');
 function fetchdata($keyid,$uuid){
 $mydata=
 "<?xml version='1.0' encoding='UTF-8'?>
@@ -177,37 +197,35 @@ function uuid(){
     mt_rand( 0, 0x3fff ) | 0x8000,
     mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff), mt_rand( 0, 0xffff ));
 }
-
-function colorresult($value){
-        if ($value =0){
+function colorresult($valuea){
+        //$valuea=0;
+        if ($valuea == 0){
                 $result="chartreuse4";
-        }elseif ($value<=9){
+        }elseif($valuea > 0 && $valuea < 10){
                 $result="chartreuse3";
-		}elseif ($value<=19){
+        }elseif ($valuea >= 10 && $valuea < 20){
                 $result="chartreuse2";
-		}elseif ($value<=29){
+        }elseif ($valuea >= 20 && $valuea < 30){
                 $result="chartreuse1";
-		}elseif ($value<=39){
+        }elseif ($valuea >= 30 && $valuea < 40){
                 $result="yellow";
-        }elseif ($value<=49){
+        }elseif ($valuea >= 40 && $valuea < 50){
                 $result="yellow2";
-		}elseif ($value<=59){
+        }elseif ($valuea >= 50 && $valuea < 60){
                 $result="orange";
-		}elseif ($value<=69){
+        }elseif ($valuea >= 60 && $valuea < 70){
                 $result="orange3";
-		}elseif ($value<=79){
+        }elseif ($valuea >= 70 && $valuea < 80){
                 $result="tomato";
-		}elseif ($value<=89){
+        }elseif ($valuea >= 80 && $valuea <90){
                 $result="orangered2";
-        }elseif ($value<=99){
+        }elseif ($valuea >=90 && $valuea < 100){
                 $result="red";
-        }elseif ($value=100){
+        }elseif ($valuea==100){
                 $result="darkred";
         }else{
                 $result="black";
         }
         return $result;
-
 }
-
 ?>
