@@ -2,7 +2,9 @@
 require_once ('./jpgraph/src/jpgraph.php');
 require_once ('./jpgraph/src/jpgraph_scatter.php');
 $now1=date("Y-m-d H:i:s");
-DEFINE('fl13','/var/www/html/fl13_plan.png');
+DEFINE('fl13','/var/www/html/fl13plan_lab.png');
+$picpath='/var/www/html/';
+$picname='fl13wasted_lab.png';
 $zonefl13[0]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z1/analytic/wasted_energy/per_day';
 $zonefl13[1]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z2/analytic/wasted_energy/per_day';
 $zonefl13[2]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z3/analytic/wasted_energy/per_day';
@@ -135,8 +137,6 @@ $graph->AddText($txt7);
 $graph->AddText($bottomtext);
 
 // .. and output to browser
-$picpath='/var/www/html/';
-$picname='fl13wasted_lab.png';
 $graph->Stroke($picname);
 //$graph->Stroke();
 //$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh');
