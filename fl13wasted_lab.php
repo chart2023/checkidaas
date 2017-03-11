@@ -17,15 +17,8 @@ $uuid=uuid();
 foreach ($zonefl13 as &$key){
         $wastedresult[]=number_format(round(fetchdata($key,$uuid),1),1,'.','');
 }
-//var_dump($wastedresult);
 foreach ($wastedresult as &$key1){
         $colorresult[]=colorresult($key1);
-}
-function markCallback($y,$x) {
-    if( $x == 54 )
-    return array(false,false,false,'red',0.8);
-    else
-    return array(false,false,false,'yellow',2);
 }
 $data = array(
     array(12,82,40,$colorresult[0]),
@@ -37,16 +30,11 @@ $data = array(
         array(74,82,40,$colorresult[6]),
         array(74,36,40,$colorresult[7])
 );
-// We need to create X,Y data vectors suitable for the
-// library from the above raw data.
 $n = count($data);
 for( $i=0; $i < $n; ++$i ) {
 
     $datax[$i] = $data[$i][0];
     $datay[$i] = $data[$i][1];
-
-    // Create a faster lookup array so we don't have to search
-    // for the correct values in the callback function
     $format[strval($datax[$i])][strval($datay[$i])] = array($data[$i][2],$data[$i][3]);
 
 }
