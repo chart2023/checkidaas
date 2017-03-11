@@ -100,11 +100,33 @@ $graph->AddText($txt1);
 $graph->AddText($txt2);
 $graph->AddText($txt3);
 $graph->AddText($bottomtext);
-
 // .. and output to browser
 //$graph->Stroke('/var/www/html/fl13wasted_lecturer.png');
-$graph->Stroke();
-//$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh fl13wasted_lecturer.png');
+// .. and output to browser
+$picpath='/var/www/html/';
+$picname='fl13wasted_lab.png';
+$graph->Stroke($picname);
+//$graph->Stroke();
+//$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh');
+uploaddropbox($picname);
+function uploaddropbox($picname){
+$url = "https://content.dropboxapi.com/2/files/upload";
+$headers = array(
+        "Authorization: Bearer wHfYxEh5FNYAAAAAAAAD3LPVcxwEMKzKqLu4ncfagRFkiwUOgU-UizhZOXyKImPS",
+        "Content-Type: application/octet-stream",
+        "Dropbox-API-Arg: {\"path\": \"/CU_EE_fl13/EE_information/$picname\",\"mode\": \"overwrite\",\"autorename\": false,\"mute\": false}");
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POST, true);
+        $file = $picname;
+        $fp = fopen($file, 'rb');
+        curl_setopt($ch, CURLOPT_POSTFIELDS,fread($fp,filesize($file)));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        fclose($fp);
+        echo $response;
+}
 function fetchdata($keyid,$uuid){
 $mydata=
 "<?xml version='1.0' encoding='UTF-8'?>
