@@ -3,8 +3,6 @@ require_once ('./jpgraph/src/jpgraph.php');
 require_once ('./jpgraph/src/jpgraph_scatter.php');
 $now1=date("Y-m-d H:i:s");
 DEFINE('fl13','/var/www/html/fl13plan_lab.png');
-$picpath='/var/www/html/';
-$picname='fl13wasted_lab.png';
 $zonefl13[0]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z1/analytic/wasted_energy/per_day';
 $zonefl13[1]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z2/analytic/wasted_energy/per_day';
 $zonefl13[2]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z3/analytic/wasted_energy/per_day';
@@ -17,24 +15,36 @@ $uuid=uuid();
 foreach ($zonefl13 as &$key){
         $wastedresult[]=number_format(round(fetchdata($key,$uuid),1),1,'.','');
 }
+//var_dump($wastedresult);
 foreach ($wastedresult as &$key1){
         $colorresult[]=colorresult($key1);
 }
+function markCallback($y,$x) {
+    if( $x == 54 )
+    return array(false,false,false,'red',0.8);
+    else
+    return array(false,false,false,'yellow',2);
+}
 $data = array(
-    array(12,82,40,$colorresult[0]),
-    array(12,36,40,$colorresult[1]),
-    array(32,82,40,$colorresult[2]),
-    array(32,36,40,$colorresult[3]),
-        array(55,82,40,$colorresult[4]),
-        array(55,36,40,$colorresult[5]),
-        array(74,82,40,$colorresult[6]),
-        array(74,36,40,$colorresult[7])
+    array(12,82,50,$colorresult[0]),
+    array(12,36,50,$colorresult[1]),
+    array(32,82,50,$colorresult[2]),
+    array(32,36,50,$colorresult[3]),
+        array(55,82,50,$colorresult[4]),
+        array(55,36,50,$colorresult[5]),
+        array(74,82,50,$colorresult[6]),
+        array(74,36,50,$colorresult[7])
 );
+// We need to create X,Y data vectors suitable for the
+// library from the above raw data.
 $n = count($data);
 for( $i=0; $i < $n; ++$i ) {
 
     $datax[$i] = $data[$i][0];
     $datay[$i] = $data[$i][1];
+
+    // Create a faster lookup array so we don't have to search
+    // for the correct values in the callback function
     $format[strval($datax[$i])][strval($datay[$i])] = array($data[$i][2],$data[$i][3]);
 
 }
@@ -60,7 +70,7 @@ $graph->yaxis->Hide();
 $graph->SetBackgroundImage(fl13,BGIMG_FILLPLOT);
 
 // Setup a nice title with a striped bevel background
-$graph->title->Set("Floor 13 research lab:  Wasted energy ratio                                       Modified:$now1");
+$graph->title->Set("Floor 13 research lab:  Wasted energy ratio (daily update)                   Modified:$now1");
 $graph->title->SetFont(FF_ARIAL,FS_BOLD,30);
 $graph->title->SetColor('white');
 $graph->SetTitleBackground('darkgreen',TITLEBKG_STYLE1,TITLEBKG_FRAME_BEVEL);
@@ -76,41 +86,42 @@ $sp->mark->SetCallbackYX('FCallback');
 // ...  and add it to the graph
 $graph->Add($sp);
 $txt0 = new Text("$wastedresult[0]".'%');
-$txt0->SetFont(FF_ARIAL,FS_BOLD,20);
-$txt0->SetPos(196,260);
+$txt0->SetFont(FF_ARIAL,FS_BOLD,26);
+$txt0->SetPos(185,260);
 $txt0->SetColor('white');
 $txt1 = new Text("$wastedresult[1]".'%');
-$txt1->SetFont(FF_ARIAL,FS_BOLD,20);
-$txt1->SetPos(196,825);
+$txt1->SetFont(FF_ARIAL,FS_BOLD,26);
+$txt1->SetPos(200,825);
 $txt1->SetColor('white');
 $txt2 = new Text("$wastedresult[2]".'%');
-$txt2->SetFont(FF_ARIAL,FS_BOLD,20);
-$txt2->SetPos(580,260);
+$txt2->SetFont(FF_ARIAL,FS_BOLD,26);
+$txt2->SetPos(570,260);
 $txt2->SetColor('white');
 $txt3 = new Text("$wastedresult[3]".'%');
-$txt3->SetFont(FF_ARIAL,FS_BOLD,20);
-$txt3->SetPos(580,825);
+$txt3->SetFont(FF_ARIAL,FS_BOLD,26);
+$txt3->SetPos(585,825);
 $txt3->SetColor('white');
 $txt4 = new Text("$wastedresult[4]".'%');
-$txt4->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt4->SetFont(FF_ARIAL,FS_BOLD,26);
 $txt4->SetPos(1025,260);
 $txt4->SetColor('white');
 $txt5 = new Text("$wastedresult[5]".'%');
-$txt5->SetFont(FF_ARIAL,FS_BOLD,20);
+$txt5->SetFont(FF_ARIAL,FS_BOLD,26);
 $txt5->SetPos(1025,825);
 $txt5->SetColor('white');
 $txt6 = new Text("$wastedresult[6]".'%');
-$txt6->SetFont(FF_ARIAL,FS_BOLD,20);
-$txt6->SetPos(1385,260);
+$txt6->SetFont(FF_ARIAL,FS_BOLD,26);
+$txt6->SetPos(1373,260);
 $txt6->SetColor('white');
 $txt7 = new Text("$wastedresult[7]".'%');
-$txt7->SetFont(FF_ARIAL,FS_BOLD,20);
-$txt7->SetPos(1385,825);
+$txt7->SetFont(FF_ARIAL,FS_BOLD,26);
+$txt7->SetPos(1373,825);
 $txt7->SetColor('white');
-$bottomtext =new Text("Wasted energy ratio is the indicator of wasted energy in air conditioning system consumption.");
-$bottomtext->SetFont(FF_ARIAL,FS_BOLD,24);
-$bottomtext->SetPos(50,1240);
+$bottomtext =new Text("Wasted energy ratio is percentage of electrical energy \nused by air conditioning system when users are not in the area.");
+$bottomtext->SetFont(FF_ARIAL,FS_BOLD,32);
+$bottomtext->SetPos(50,1170);
 $bottomtext->SetColor('black');
+$bottomtext->SetBox('white','black');
 
 //$txt->SetBox('yellow','black');
 //$txt->SetShadow();
@@ -125,6 +136,8 @@ $graph->AddText($txt7);
 $graph->AddText($bottomtext);
 
 // .. and output to browser
+$picpath='/var/www/html/';
+$picname='fl13wasted_lab.png';
 $graph->Stroke($picname);
 //$graph->Stroke();
 //$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh');
