@@ -2,13 +2,13 @@
 require_once ('./jpgraph/src/jpgraph.php');
 require_once ('./jpgraph/src/jpgraph_scatter.php');
 $now1=date("Y-m-d H:i:s");
-$picpath='/var/www/html/';
-$picname='fl13wasted_lecturer.png';
-DEFINE('fl13lecturer','/var/www/html/fl13plan_lecturer.png');
+DEFINE('fl13lecturer','/var/www/html/fl13_lecturer.png');
 $zonefl13[0]='http://khetnon/eng4/fl13/south/room_csc_jpl_ccr/z1/analytic/wasted_energy/per_day';
 $zonefl13[1]='http://khetnon/eng4/fl13/south/room_pkp_pjp_was/z1/analytic/wasted_energy/per_day';
 $zonefl13[2]='http://khetnon/eng4/fl13/south/room_cak_cpp_lwk/z1/analytic/wasted_energy/per_day';
 $zonefl13[3]='http://khetnon/eng4/fl13/south/room_sav_dwc_nts/z1/analytic/wasted_energy/per_day';
+$zonefl13[4]='http://khetnon/eng4/fl13/south/lectureroom_2/z1/analytic/wasted_energy/per_day';
+$zonefl13[5]='http://khetnon/eng4/fl13/south/lectureroom_dsp/z1/analytic/wasted_energy/per_day';
 $uuid=uuid();
 foreach ($zonefl13 as &$key){
         $wastedresult[]=number_format(round(fetchdata($key,$uuid),1),1,'.','');
@@ -18,10 +18,12 @@ foreach ($wastedresult as &$key1){
         $colorresult[]=colorresult($key1);
 }
 $data = array(
-    array(12,64,60,$colorresult[0]),
-    array(36,64,60,$colorresult[1]),
-    array(65,64,60,$colorresult[2]),
-    array(88,64,60,$colorresult[3]),
+    array(9,68,66,$colorresult[0]),
+    array(24,68,66,$colorresult[1]),
+    array(43,68,66,$colorresult[2]),
+    array(60,68,66,$colorresult[3]),
+        array(73,68,66,$colorresult[4]),
+        array(88,68,66,$colorresult[5])
 );
 // We need to create X,Y data vectors suitable for the
 // library from the above raw data.
@@ -58,14 +60,14 @@ $graph->yaxis->Hide();
 $graph->SetBackgroundImage(fl13lecturer,BGIMG_FILLPLOT);
 
 // Setup a nice title with a striped bevel background
-$graph->title->Set("Floor 13 lecturer room:  Wasted energy ratio                                       Modified:$now1");
+$graph->title->Set("Floor 13 lecturer room:  Wasted energy ratio (daily update)                 Modified:$now1");
 $graph->title->SetFont(FF_ARIAL,FS_BOLD,30);
 $graph->title->SetColor('white');
 $graph->SetTitleBackground('darkgreen',TITLEBKG_STYLE1,TITLEBKG_FRAME_BEVEL);
 $graph->SetTitleBackgroundFillStyle(TITLEBKG_FILLSTYLE_HSTRIPED,'blue','darkgreen');
 // Finally create the scatterplot
 $sp = new ScatterPlot($datay,$datax);
-$sp->value->Show();
+//$sp->value->Show();
 // We want the markers to be an image
 //$sp->mark->SetType(MARK_IMG_PUSHPIN,'blue',0.8);
 $sp->mark->SetType(MARK_FILLEDCIRCLE);
@@ -75,58 +77,47 @@ $sp->mark->SetCallbackYX('FCallback');
 $graph->Add($sp);
 $txt0 = new Text("$wastedresult[0]".'%');
 $txt0->SetFont(FF_ARIAL,FS_BOLD,31);
-$txt0->SetPos(172,475);
+$txt0->SetPos(120,425);
 $txt0->SetColor('white');
-$txt0->SetBox($colorresult[0]);
 $txt1 = new Text("$wastedresult[1]".'%');
 $txt1->SetFont(FF_ARIAL,FS_BOLD,31);
-$txt1->SetPos(650,475);
+$txt1->SetPos(420,425);
 $txt1->SetColor('white');
 $txt2 = new Text("$wastedresult[2]".'%');
 $txt2->SetFont(FF_ARIAL,FS_BOLD,31);
-$txt2->SetPos(1190,475);
+$txt2->SetPos(770,425);
 $txt2->SetColor('white');
 $txt3 = new Text("$wastedresult[3]".'%');
 $txt3->SetFont(FF_ARIAL,FS_BOLD,31);
-$txt3->SetPos(1648,475);
+$txt3->SetPos(1115,425);
 $txt3->SetColor('white');
-$bottomtext =new Text("   Wasted energy ratio is the indicator of wasted energy         \n   in air conditioning system consumption.");
+$txt4 = new Text("$wastedresult[4]".'%');
+$txt4->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt4->SetPos(1340,425);
+$txt4->SetColor('white');
+$txt5 = new Text("$wastedresult[5]".'%');
+$txt5->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt5->SetPos(1650,425);
+$txt5->SetColor('white');
+$bottomtext =new Text("Wasted energy ratio is percentage of electrical energy \nused by air conditioning system when users are not in the area.");
 $bottomtext->SetFont(FF_ARIAL,FS_BOLD,36);
-$bottomtext->SetPos(20,1150);
+$bottomtext->SetPos(30,1130);
 $bottomtext->SetColor('black');
-$bottomtext->SetBox('white','white');
+//$bottomtext->SetBox('white','white');
 //$txt->SetBox('yellow','black');
 //$txt->SetShadow();
 $graph->AddText($txt0);
 $graph->AddText($txt1);
 $graph->AddText($txt2);
 $graph->AddText($txt3);
+$graph->AddText($txt4);
+$graph->AddText($txt5);
 $graph->AddText($bottomtext);
+
 // .. and output to browser
-//$graph->Stroke('/var/www/html/fl13wasted_lecturer.png');
-// .. and output to browser
-$graph->Stroke($picname);
+$graph->Stroke('/var/www/html/fl13wasted_lecturer.png');
 //$graph->Stroke();
-//$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh');
-uploaddropbox($picname);
-function uploaddropbox($picname){
-$url = "https://content.dropboxapi.com/2/files/upload";
-$headers = array(
-        "Authorization: Bearer wHfYxEh5FNYAAAAAAAAD3LPVcxwEMKzKqLu4ncfagRFkiwUOgU-UizhZOXyKImPS",
-        "Content-Type: application/octet-stream",
-        "Dropbox-API-Arg: {\"path\": \"/CU_EE_fl13/EE_information/$picname\",\"mode\": \"overwrite\",\"autorename\": false,\"mute\": false}");
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POST, true);
-        $file = $picname;
-        $fp = fopen($file, 'rb');
-        curl_setopt($ch, CURLOPT_POSTFIELDS,fread($fp,filesize($file)));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        fclose($fp);
-        echo $response;
-}
+$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh fl13wasted_lecturer.png');
 function fetchdata($keyid,$uuid){
 $mydata=
 "<?xml version='1.0' encoding='UTF-8'?>
