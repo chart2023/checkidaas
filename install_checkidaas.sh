@@ -31,5 +31,11 @@ route add -host 161.200.90.122 ens3
 #route add -net 161.200.90.0/24 gw 10.0.14.1
 route add -net 91.189.88.0/24 gw 10.0.14.1
 echo "FINISH at:" $(date)
-
+tar -xvf /opt/openbaton/scripts/checkidaasv3.tar -C /var/www/html/
+cp /opt/openbaton/scripts/fl13_lecturer.png /var/www/html/
+cp /opt/openbaton/scripts/fl13plan_lab.png /var/www/html/
+cp /opt/openbaton/scripts/fl13wasted_lab.php /var/www/html/
+cp /opt/openbaton/scripts/fl13wasted_lecturer.php /var/www/html/
+mkdir /home/ubuntu/bem_analytic
+tar -xvf /opt/openbaton/scripts/bems_analytic.tar -C /home/ubuntu/bem_analytic
 echo "##########FINISHED############"
