@@ -181,8 +181,9 @@ function uuid(){
 }
 function colorresult($valuea){
         if(!is_numeric($valuea)){
-                $result="black";
-        }
+                return $result="black";
+
+        }else{
         if ($valuea == 0){
                 $result="chartreuse4";
         }elseif($valuea > 0 && $valuea < 10){
@@ -209,6 +210,7 @@ function colorresult($valuea){
                 $result="darkred";
         }else{
                 $result="black";
+            }
         }
         return $result;
 }
