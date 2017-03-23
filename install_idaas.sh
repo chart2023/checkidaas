@@ -38,4 +38,5 @@ cp /opt/openbaton/scripts/fl13wasted_lab.php /var/www/html/
 cp /opt/openbaton/scripts/fl13wasted_lecturer.php /var/www/html/
 mkdir /home/ubuntu/bem_analytic
 tar -xvf /opt/openbaton/scripts/bems_analytic.tar -C /home/ubuntu/bem_analytic
+cp /opt/openbaton/scripts/querydata.py /home/ubuntu/bem_analytic/
 echo "##########FINISHED############"
