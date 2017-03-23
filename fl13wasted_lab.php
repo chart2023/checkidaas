@@ -2,6 +2,7 @@
 require_once ('./jpgraph/src/jpgraph.php');
 require_once ('./jpgraph/src/jpgraph_scatter.php');
 $now1=date("Y-m-d H:i:s");
+$yest=date('Y-m-d',strtotime("-1 days"));
 DEFINE('fl13','/var/www/html/fl13plan_lab.png');
 $zonefl13[0]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z1/analytic/wasted_energy/per_day';
 $zonefl13[1]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z2/analytic/wasted_energy/per_day';
@@ -13,7 +14,7 @@ $zonefl13[6]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z7/analytic/was
 $zonefl13[7]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z8/analytic/wasted_energy/per_day';
 $uuid=uuid();
 foreach ($zonefl13 as &$key){
-        $wastedresult[]=number_format(round(fetchdata($key,$uuid),1),1,'.','');
+        $wastedresult[]=checkvalue(checkdate1(fetchdata($key,$uuid),$yest));
 }
 //var_dump($wastedresult);
 foreach ($wastedresult as &$key1){
@@ -203,12 +204,12 @@ $url = "http://161.200.90.122/axis2/services/FIAPStorage";
                                 $xml->children($ns['soapenv'])->
                                 Body->children($ns['ns2'])->
                                 queryRS->children($ns[''])->transport->body->point->value;
-                                $para=$child;
+                                $para[1]=$child;
                                 $child2 =(string)
                                 $xml->children($ns['soapenv'])->
                                 Body->children($ns['ns2'])->
                                 queryRS->children($ns[''])->transport->body->point->value->attributes();
-                                //$para[2]=$child2;
+                                $para[2]=$child2;
             }
             curl_close($ch);
                         return $para;
@@ -251,4 +252,21 @@ function colorresult($valuea){
         }
         return $result;
 }
+function checkvalue($value1){
+        if(is_numeric($value1)){
+                return number_format(round($value1,1),1,'.','');
+        }else{
+                return "NaN";
+        }
+}
+function checkdate1($data,$yest){
+        $datats=explode("T",$data[2]);
+        if($datats[0] == $yest){
+                return $data[1];
+        }else{
+                return "NaN";
+        }
+
+}
+
 ?>
