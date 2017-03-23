@@ -92,7 +92,7 @@ $txt0->SetPos(185,260);
 $txt0->SetColor('white');
 $txt1 = new Text("$wastedresult[1]".'%');
 $txt1->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt1->SetPos(200,825);
+$txt1->SetPos(185,825);
 $txt1->SetColor('white');
 $txt2 = new Text("$wastedresult[2]".'%');
 $txt2->SetFont(FF_ARIAL,FS_BOLD,26);
@@ -100,23 +100,23 @@ $txt2->SetPos(570,260);
 $txt2->SetColor('white');
 $txt3 = new Text("$wastedresult[3]".'%');
 $txt3->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt3->SetPos(585,825);
+$txt3->SetPos(570,825);
 $txt3->SetColor('white');
 $txt4 = new Text("$wastedresult[4]".'%');
 $txt4->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt4->SetPos(1025,260);
+$txt4->SetPos(1010,260);
 $txt4->SetColor('white');
 $txt5 = new Text("$wastedresult[5]".'%');
 $txt5->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt5->SetPos(1025,825);
+$txt5->SetPos(1010,825);
 $txt5->SetColor('white');
 $txt6 = new Text("$wastedresult[6]".'%');
 $txt6->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt6->SetPos(1373,260);
+$txt6->SetPos(1370,260);
 $txt6->SetColor('white');
 $txt7 = new Text("$wastedresult[7]".'%');
 $txt7->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt7->SetPos(1373,825);
+$txt7->SetPos(1370,825);
 $txt7->SetColor('white');
 $bottomtext =new Text("Wasted energy ratio is percentage of electrical energy \nused by air conditioning system when users are not in the area.");
 $bottomtext->SetFont(FF_ARIAL,FS_BOLD,32);
@@ -222,7 +222,9 @@ function uuid(){
     mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff), mt_rand( 0, 0xffff ));
 }
 function colorresult($valuea){
-        //$valuea=0;
+        if(!is_numeric($valuea)){
+                return $result="black";
+        }else{
         if ($valuea == 0){
                 $result="chartreuse4";
         }elseif($valuea > 0 && $valuea < 10){
@@ -249,6 +251,7 @@ function colorresult($valuea){
                 $result="darkred";
         }else{
                 $result="black";
+                }
         }
         return $result;
 }
