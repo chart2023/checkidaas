@@ -2,6 +2,7 @@
 require_once ('./jpgraph/src/jpgraph.php');
 require_once ('./jpgraph/src/jpgraph_scatter.php');
 $now1=date("Y-m-d H:i:s");
+$yest=date('Y-m-d',strtotime("-1 days"));
 DEFINE('fl13lecturer','/var/www/html/fl13_lecturer.png');
 $zonefl13[0]='http://khetnon/eng4/fl13/south/room_csc_jpl_ccr/z1/analytic/wasted_energy/per_day';
 $zonefl13[1]='http://khetnon/eng4/fl13/south/room_pkp_pjp_was/z1/analytic/wasted_energy/per_day';
@@ -11,7 +12,8 @@ $zonefl13[4]='http://khetnon/eng4/fl13/south/lectureroom_2/z1/analytic/wasted_en
 $zonefl13[5]='http://khetnon/eng4/fl13/south/lectureroom_dsp/z1/analytic/wasted_energy/per_day';
 $uuid=uuid();
 foreach ($zonefl13 as &$key){
-        $wastedresult[]=number_format(round(fetchdata($key,$uuid),1),1,'.','');
+        //$wastedresult[]=number_format(round(fetchdata($key,$uuid),1),1,'.','');
+        $wastedresult[]=checkvalue(checkdate1(fetchdata($key,$uuid),$yest));
 }
 //var_dump($wastedresult);
 foreach ($wastedresult as &$key1){
@@ -81,7 +83,7 @@ $txt0->SetPos(120,425);
 $txt0->SetColor('white');
 $txt1 = new Text("$wastedresult[1]".'%');
 $txt1->SetFont(FF_ARIAL,FS_BOLD,31);
-$txt1->SetPos(420,425);
+$txt1->SetPos(410,425);
 $txt1->SetColor('white');
 $txt2 = new Text("$wastedresult[2]".'%');
 $txt2->SetFont(FF_ARIAL,FS_BOLD,31);
@@ -89,7 +91,7 @@ $txt2->SetPos(770,425);
 $txt2->SetColor('white');
 $txt3 = new Text("$wastedresult[3]".'%');
 $txt3->SetFont(FF_ARIAL,FS_BOLD,31);
-$txt3->SetPos(1115,425);
+$txt3->SetPos(1110,425);
 $txt3->SetColor('white');
 $txt4 = new Text("$wastedresult[4]".'%');
 $txt4->SetFont(FF_ARIAL,FS_BOLD,31);
@@ -97,7 +99,7 @@ $txt4->SetPos(1340,425);
 $txt4->SetColor('white');
 $txt5 = new Text("$wastedresult[5]".'%');
 $txt5->SetFont(FF_ARIAL,FS_BOLD,31);
-$txt5->SetPos(1650,425);
+$txt5->SetPos(1640,425);
 $txt5->SetColor('white');
 $bottomtext =new Text("Wasted energy ratio is percentage of electrical energy \nused by air conditioning system when users are not in the area.");
 $bottomtext->SetFont(FF_ARIAL,FS_BOLD,36);
@@ -160,12 +162,12 @@ $url = "http://161.200.90.122/axis2/services/FIAPStorage";
                                 $xml->children($ns['soapenv'])->
                                 Body->children($ns['ns2'])->
                                 queryRS->children($ns[''])->transport->body->point->value;
-                                $para=$child;
+                                $para[1]=$child;
                                 $child2 =(string)
                                 $xml->children($ns['soapenv'])->
                                 Body->children($ns['ns2'])->
                                 queryRS->children($ns[''])->transport->body->point->value->attributes();
-                                //$para[2]=$child2;
+                                $para[2]=$child2;
             }
             curl_close($ch);
                         return $para;
@@ -178,7 +180,9 @@ function uuid(){
     mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff), mt_rand( 0, 0xffff ));
 }
 function colorresult($valuea){
-        //$valuea=0;
+        if(!is_numeric($valuea)){
+                $result="black";
+        }
         if ($valuea == 0){
                 $result="chartreuse4";
         }elseif($valuea > 0 && $valuea < 10){
@@ -207,5 +211,21 @@ function colorresult($valuea){
                 $result="black";
         }
         return $result;
+}
+function checkvalue($value1){
+        if(is_numeric($value1)){
+                return number_format(round($value1,1),1,'.','');
+        }else{
+                return "NaN";
+        }
+}
+function checkdate1($data,$yest){
+        $datats=explode("T",$data[2]);
+        if($datats[0] == $yest){
+                return $data[1];
+        }else{
+                return "NaN";
+        }
+
 }
 ?>
