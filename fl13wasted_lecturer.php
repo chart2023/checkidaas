@@ -1,6 +1,6 @@
 <?php
-require_once ('./jpgraph/src/jpgraph.php');
-require_once ('./jpgraph/src/jpgraph_scatter.php');
+require_once ('/var/www/html/jpgraph/src/jpgraph.php');
+require_once ('/var/www/html/jpgraph/src/jpgraph_scatter.php');
 $now1=date("Y-m-d H:i:s");
 $yest=date('Y-m-d',strtotime("-1 days"));
 DEFINE('fl13lecturer','/var/www/html/fl13_lecturer.png');
