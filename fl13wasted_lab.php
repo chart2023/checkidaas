@@ -1,17 +1,16 @@
+#!/usr/bin/php -dsafe_mode=Off
 <?php
 require_once ('/var/www/html/jpgraph/src/jpgraph.php');
 require_once ('/var/www/html/jpgraph/src/jpgraph_scatter.php');
 $now1=date("Y-m-d H:i:s");
 $yest=date('Y-m-d',strtotime("-1 days"));
-DEFINE('fl13','/var/www/html/fl13plan_lab.png');
-$zonefl13[0]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z1/analytic/wasted_energy/per_day';
-$zonefl13[1]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z2/analytic/wasted_energy/per_day';
-$zonefl13[2]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z3/analytic/wasted_energy/per_day';
-$zonefl13[3]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z4/analytic/wasted_energy/per_day';
-$zonefl13[4]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z5/analytic/wasted_energy/per_day';
-$zonefl13[5]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z6/analytic/wasted_energy/per_day';
-$zonefl13[6]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z7/analytic/wasted_energy/per_day';
-$zonefl13[7]='http://khetnon/eng4/fl13/north/lab_tsrl_dsprl_emrl/z8/analytic/wasted_energy/per_day';
+DEFINE('fl13lecturer','/var/www/html/fl13_lecturer.png');
+$zonefl13[0]='http://khetnon/eng4/fl13/south/room_csc_jpl_ccr/z1/analytic/wasted_energy/per_day';
+$zonefl13[1]='http://khetnon/eng4/fl13/south/room_pkp_pjp_was/z1/analytic/wasted_energy/per_day';
+$zonefl13[2]='http://khetnon/eng4/fl13/south/room_cak_cpp_lwk/z1/analytic/wasted_energy/per_day';
+$zonefl13[3]='http://khetnon/eng4/fl13/south/room_sav_dwc_nts/z1/analytic/wasted_energy/per_day';
+$zonefl13[4]='http://khetnon/eng4/fl13/south/lectureroom_2/z1/analytic/wasted_energy/per_day';
+$zonefl13[5]='http://khetnon/eng4/fl13/south/lectureroom_dsp/z1/analytic/wasted_energy/per_day';
 $uuid=uuid();
 foreach ($zonefl13 as &$key){
         $wastedresult[]=checkvalue(checkdate1(fetchdata($key,$uuid),$yest));
@@ -20,21 +19,13 @@ foreach ($zonefl13 as &$key){
 foreach ($wastedresult as &$key1){
         $colorresult[]=colorresult($key1);
 }
-function markCallback($y,$x) {
-    if( $x == 54 )
-    return array(false,false,false,'red',0.8);
-    else
-    return array(false,false,false,'yellow',2);
-}
 $data = array(
-    array(12,82,50,$colorresult[0]),
-    array(12,36,50,$colorresult[1]),
-    array(32,82,50,$colorresult[2]),
-    array(32,36,50,$colorresult[3]),
-        array(55,82,50,$colorresult[4]),
-        array(55,36,50,$colorresult[5]),
-        array(74,82,50,$colorresult[6]),
-        array(74,36,50,$colorresult[7])
+    array(9,68,66,$colorresult[0]),
+    array(24,68,66,$colorresult[1]),
+    array(43,68,66,$colorresult[2]),
+    array(60,68,66,$colorresult[3]),
+        array(73,68,66,$colorresult[4]),
+        array(88,68,66,$colorresult[5])
 );
 // We need to create X,Y data vectors suitable for the
 // library from the above raw data.
@@ -68,10 +59,10 @@ $graph->xaxis->Hide();
 $graph->yaxis->Hide();
 
 // Use a worldmap as the background and let it fill the plot area
-$graph->SetBackgroundImage(fl13,BGIMG_FILLPLOT);
+$graph->SetBackgroundImage(fl13lecturer,BGIMG_FILLPLOT);
 
 // Setup a nice title with a striped bevel background
-$graph->title->Set("Floor 13 research lab:  Wasted energy ratio (daily update)                   Modified:$now1");
+$graph->title->Set("Floor 13 lecturer room:  Wasted energy ratio (daily update)                 Modified:$now1");
 $graph->title->SetFont(FF_ARIAL,FS_BOLD,30);
 $graph->title->SetColor('white');
 $graph->SetTitleBackground('darkgreen',TITLEBKG_STYLE1,TITLEBKG_FRAME_BEVEL);
@@ -85,45 +76,37 @@ $sp->mark->SetType(MARK_FILLEDCIRCLE);
 // Install the Y-X callback for the markers
 $sp->mark->SetCallbackYX('FCallback');
 // ...  and add it to the graph
+$textcolor='deepskyblue3';
 $graph->Add($sp);
 $txt0 = new Text("$wastedresult[0]".'%');
-$txt0->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt0->SetPos(185,260);
-$txt0->SetColor('white');
+$txt0->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt0->SetPos(120,425);
+$txt0->SetColor($textcolor);
 $txt1 = new Text("$wastedresult[1]".'%');
-$txt1->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt1->SetPos(185,825);
-$txt1->SetColor('white');
+$txt1->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt1->SetPos(410,425);
+$txt1->SetColor($textcolor);
 $txt2 = new Text("$wastedresult[2]".'%');
-$txt2->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt2->SetPos(570,260);
-$txt2->SetColor('white');
+$txt2->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt2->SetPos(775,425);
+$txt2->SetColor($textcolor);
 $txt3 = new Text("$wastedresult[3]".'%');
-$txt3->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt3->SetPos(570,825);
-$txt3->SetColor('white');
+$txt3->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt3->SetPos(1100,425);
+$txt3->SetColor($textcolor);
 $txt4 = new Text("$wastedresult[4]".'%');
-$txt4->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt4->SetPos(1010,260);
-$txt4->SetColor('white');
+$txt4->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt4->SetPos(1340,425);
+$txt4->SetColor($textcolor);
 $txt5 = new Text("$wastedresult[5]".'%');
-$txt5->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt5->SetPos(1010,825);
-$txt5->SetColor('white');
-$txt6 = new Text("$wastedresult[6]".'%');
-$txt6->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt6->SetPos(1370,260);
-$txt6->SetColor('white');
-$txt7 = new Text("$wastedresult[7]".'%');
-$txt7->SetFont(FF_ARIAL,FS_BOLD,26);
-$txt7->SetPos(1370,825);
-$txt7->SetColor('white');
+$txt5->SetFont(FF_ARIAL,FS_BOLD,31);
+$txt5->SetPos(1640,425);
+$txt5->SetColor($textcolor);
 $bottomtext =new Text("Wasted energy ratio is percentage of electrical energy \nused by air conditioning system when users are not in the area.");
-$bottomtext->SetFont(FF_ARIAL,FS_BOLD,32);
-$bottomtext->SetPos(50,1170);
+$bottomtext->SetFont(FF_ARIAL,FS_BOLD,36);
+$bottomtext->SetPos(30,1130);
 $bottomtext->SetColor('black');
-$bottomtext->SetBox('white','black');
-
+//$bottomtext->SetBox('white','white');
 //$txt->SetBox('yellow','black');
 //$txt->SetShadow();
 $graph->AddText($txt0);
@@ -132,13 +115,14 @@ $graph->AddText($txt2);
 $graph->AddText($txt3);
 $graph->AddText($txt4);
 $graph->AddText($txt5);
-$graph->AddText($txt6);
-$graph->AddText($txt7);
 $graph->AddText($bottomtext);
 
 // .. and output to browser
+//$graph->Stroke('/var/www/html/fl13wasted_lecturer.png');
+//$graph->Stroke();
+//$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh /var/www/html/ffl13wasted_lecturer.png');
 $picpath='/var/www/html/';
-$picname='fl13wasted_lab.png';
+$picname='fl13wasted_lecturer.png';
 $graph->Stroke($picname);
 //$graph->Stroke();
 //$uploaddropbox = shell_exec('/var/www/html/uploaddropbox.sh');
@@ -161,7 +145,6 @@ $headers = array(
         fclose($fp);
         echo $response;
 }
-
 function fetchdata($keyid,$uuid){
 $mydata=
 "<?xml version='1.0' encoding='UTF-8'?>
@@ -251,7 +234,7 @@ function colorresult($valuea){
                 $result="darkred";
         }else{
                 $result="black";
-                }
+        }
         }
         return $result;
 }
@@ -269,7 +252,5 @@ function checkdate1($data,$yest){
         }else{
                 return "NaN";
         }
-
 }
-
 ?>
