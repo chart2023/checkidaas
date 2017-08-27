@@ -1,0 +1,5 @@
+#15 16 * * * python /home/eecuapp/Khetnon-analytic/Calculate-Wasted.py
+02 03 * * * php /var/www/html/fl13student.php
+04 03 * * * php /var/www/html/fl13lecturer.php
+06 03 * * * php /var/www/html/fl12student.php
+08 03 * * * php /var/www/html/fl12lecturer.php
